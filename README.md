@@ -8,33 +8,7 @@
 [![ci](https://img.shields.io/github/actions/workflow/status/vikas027/k8s-flagger-tester/ci.yaml?logo=github&label=ci)](https://github.com/vikas027/k8s-flagger-tester/actions/workflows/ci.yaml)
 [![release pipeline](https://img.shields.io/github/actions/workflow/status/vikas027/k8s-flagger-tester/release.yaml?logo=github&label=release+pipeline)](https://github.com/vikas027/k8s-flagger-tester/actions/workflows/release.yaml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vikas027/k8s-flagger-tester/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vikas027/k8s-flagger-tester)
-
----
-
-<svg width="600" height="120" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <style>
-      .box { fill: #1e40af; rx: 8; }
-      .label { fill: #fff; font-family: monospace; font-size: 13px; text-anchor: middle; dominant-baseline: middle; }
-      .arrow { fill: none; stroke: #60a5fa; stroke-width: 2.5; marker-end: url(#arrowhead); stroke-dasharray: 8 4; }
-      @keyframes dash { to { stroke-dashoffset: -24; } }
-      .arrow { animation: dash 1s linear infinite; }
-    </style>
-    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#60a5fa" />
-    </marker>
-  </defs>
-  <rect x="10" y="35" width="140" height="50" rx="8" class="box" />
-  <text x="80" y="60" class="label">New Version</text>
-  <line x1="150" y1="60" x2="210" y2="60" class="arrow" />
-  <rect x="210" y="35" width="180" height="50" rx="8" class="box" />
-  <text x="300" y="60" class="label">Canary Tests</text>
-  <text x="300" y="75" class="label" style="font-size:10px;">(hurl + k6)</text>
-  <line x1="390" y1="60" x2="450" y2="60" class="arrow" />
-  <rect x="450" y="35" width="140" height="50" rx="8" class="box" />
-  <text x="520" y="55" class="label">Promote /</text>
-  <text x="520" y="72" class="label">Rollback</text>
-</svg>
+[![docs](https://img.shields.io/badge/docs-vikas027.github.io-blue?logo=materialformkdocs)](https://vikas027.github.io/k8s-flagger-tester/)
 
 ---
 

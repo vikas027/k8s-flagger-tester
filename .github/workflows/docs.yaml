@@ -1,17 +1,6 @@
 ---
 name: Docs
 
-# ============================================================================
-# GitHub Actions Registry
-# ============================================================================
-#
-# | Action                                      | Version | SHA (Short) | Repository                                              |
-# |---------------------------------------------|---------|-------------|---------------------------------------------------------|
-# | actions/checkout                             | v6.0.3  | df4cb1c     | https://github.com/actions/checkout                     |
-# | actions/setup-python                         | v6.2.0  | a309ff8     | https://github.com/actions/setup-python                 |
-# | rossjrw/pr-preview-action                    | v1.8.1  | ffa7509     | https://github.com/rossjrw/pr-preview-action            |
-# ============================================================================
-
 on:
   push:
     branches: [main]
@@ -20,6 +9,7 @@ on:
       - "mkdocs.yaml"
       - "requirements.txt"
       - "CHANGELOG.md"
+      - "SECURITY.md"
   pull_request:
     types: [opened, synchronize, reopened, closed]
     paths:

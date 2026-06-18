@@ -1,6 +1,22 @@
 ---
 name: CI
 
+# ============================================================================
+# GitHub Actions Registry
+# ============================================================================
+#
+# | Action                                      | Version | SHA (Short) | Repository                                              |
+# |---------------------------------------------|---------|-------------|---------------------------------------------------------|
+# | amannn/action-semantic-pull-request          | v6.1.1  | 48f2562     | https://github.com/amannn/action-semantic-pull-request  |
+# | actions/checkout                             | v6.0.3  | df4cb1c     | https://github.com/actions/checkout                     |
+# | actions/setup-python                         | v6.2.0  | a309ff8     | https://github.com/actions/setup-python                 |
+# | dorny/paths-filter                           | v4.0.1  | fbd0ab8     | https://github.com/dorny/paths-filter                   |
+# | docker/setup-buildx-action                   | v4.1.0  | d7f5e7f     | https://github.com/docker/setup-buildx-action           |
+# | docker/build-push-action                     | v7.2.0  | f9f3042     | https://github.com/docker/build-push-action             |
+# | aquasecurity/trivy-action                    | v0.36.0 | ed142fd     | https://github.com/aquasecurity/trivy-action            |
+# | github/codeql-action/upload-sarif           | v4.36.2 | 8aad20d     | https://github.com/github/codeql-action                 |
+# ============================================================================
+
 on:
   pull_request:
     branches: [main]
@@ -18,8 +34,8 @@ on:
 
 permissions:
   contents: read
-  packages: write
   pull-requests: read
+  security-events: write
 
 jobs:
   commit-msg:
@@ -56,9 +72,24 @@ jobs:
       - name: Run pre-commit hooks
         run: pre-commit run --all-files -v
 
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      dockerfile: ${{ steps.filter.outputs.dockerfile }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        id: filter
+        with:
+          filters: |
+            dockerfile:
+              - 'Dockerfile'
+
   docker-preview:
     runs-on: ubuntu-latest
-    needs: [lint]
+    needs: [lint, changes]
+    if: needs.changes.outputs.dockerfile == 'true'
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
@@ -91,13 +122,14 @@ jobs:
 
   trivy-scan:
     runs-on: ubuntu-latest
-    needs: [docker-preview]
+    needs: [docker-preview, changes]
+    if: needs.changes.outputs.dockerfile == 'true'
     steps:
       - name: Set image reference
         id: meta
         run: echo "image=ttl.sh/vikas027/k8s-flagger-tester:6h-${{ github.event.pull_request.number }}-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
-      - name: Scan image with Trivy
+      - name: Scan image with Trivy (table)
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: ${{ steps.meta.outputs.image }}
@@ -106,6 +138,20 @@ jobs:
           severity: "CRITICAL,HIGH,MEDIUM"
           exit-code: "0"
           ignore-unfixed: true
+
+      - name: Scan image with Trivy (SARIF)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ steps.meta.outputs.image }}
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH,MEDIUM"
+          ignore-unfixed: true
+
+      - name: Upload Trivy SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4.36.2
+        with:
+          sarif_file: trivy-results.sarif
 
       - name: Generate scan summary
         if: always()
