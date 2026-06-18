@@ -1,0 +1,6 @@
+.git
+*.md
+.github
+.pre-commit-config.yaml
+.yamllint.yaml
+TODO.md
