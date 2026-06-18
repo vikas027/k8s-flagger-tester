@@ -17,7 +17,7 @@ ARG GRPC_HEALTH_PROBE_VERSION=v0.4.52
 # hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        ca-certificates curl jq git libxml2 \
+        ca-certificates curl wget jq git libxml2 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=loadtester /home/app/loadtester /home/app/loadtester
