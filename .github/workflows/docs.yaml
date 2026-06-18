@@ -1,6 +1,17 @@
 ---
 name: Docs
 
+# ============================================================================
+# GitHub Actions Registry
+# ============================================================================
+#
+# | Action                                      | Version | SHA (Short) | Repository                                              |
+# |---------------------------------------------|---------|-------------|---------------------------------------------------------|
+# | actions/checkout                             | v6.0.3  | df4cb1c     | https://github.com/actions/checkout                     |
+# | actions/setup-python                         | v6.2.0  | a309ff8     | https://github.com/actions/setup-python                 |
+# | rossjrw/pr-preview-action                    | v1.8.1  | ffa7509     | https://github.com/rossjrw/pr-preview-action            |
+# ============================================================================
+
 on:
   push:
     branches: [main]
@@ -9,13 +20,21 @@ on:
       - "mkdocs.yaml"
       - "requirements.txt"
       - "CHANGELOG.md"
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    paths:
+      - "docs/**"
+      - "mkdocs.yaml"
+      - "requirements.txt"
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -30,3 +49,64 @@ jobs:
 
       - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force
+
+  preview:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        if: github.event.action != 'closed'
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        if: github.event.action != 'closed'
+        run: pip install -r requirements.txt
+
+      - name: Build docs
+        if: github.event.action != 'closed'
+        run: mkdocs build --site-dir /tmp/docs-preview
+
+      - uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1.8.1
+        with:
+          source-dir: /tmp/docs-preview
+          comment: false
+
+      - name: Post preview comment
+        if: github.event.action != 'closed'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PREVIEW_URL="https://vikas027.github.io/k8s-flagger-tester/pr-preview/pr-${{ github.event.number }}/"
+          gh pr comment ${{ github.event.number }} --repo ${{ github.repository }} --body "$(cat <<EOF
+          ## 📖 Docs Preview
+
+          > **Note:** This preview is for **documentation only** and is not related to the Docker image.
+
+          | | |
+          |---|---|
+          | **URL** | ${PREVIEW_URL} |
+          | **SHA** | \`${GITHUB_SHA::7}\` |
+
+          _Preview will be removed when this PR is closed._
+          EOF
+          )"
+
+      - name: Write preview summary
+        if: github.event.action != 'closed'
+        run: |
+          {
+            echo "## 📖 Docs Preview"
+            echo ""
+            echo "> This preview is for **documentation only** and is not related to the Docker image."
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| **URL** | https://vikas027.github.io/k8s-flagger-tester/pr-preview/pr-${{ github.event.number }}/ |"
+            echo "| **PR** | #${{ github.event.number }} |"
+            echo "| **SHA** | \`${GITHUB_SHA::7}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,7 +1,7 @@
 FROM ghcr.io/fluxcd/flagger-loadtester:0.37.0 AS loadtester
 FROM bats/bats:1.13.0 AS bats
 
-FROM debian:12-slim
+FROM debian:13-slim
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -78,7 +78,7 @@ WORKDIR /home/app
 
 USER app
 
-RUN set -eux; \
+RUN set -eu; \
     for tool in helm kubectl ghz grpc_health_probe hurl k6 bats; do \
       echo "--- ${tool} ---"; \
       case "${tool}" in \
