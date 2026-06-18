@@ -1,0 +1,58 @@
+[settings]
+lockfile = true
+idiomatic_version_file_enable_tools = []
+
+[tools]
+python = "3.14.6"
+
+## TASKS
+# Usage: mise run <task_name_or_alias>
+
+[tasks.install]
+description = 'Install all dependencies and pre-commit hooks'
+run = [
+    'pip install -r requirements.txt',
+    'pre-commit install',
+    'pre-commit install --hook-type commit-msg',
+]
+alias = 'i'
+
+[tasks.lint]
+description = 'Run pre-commit hooks on all files'
+run = 'pre-commit run --all-files'
+alias = 'l'
+
+[tasks.docker-build]
+description = 'Build multi-arch Docker image (amd64 + arm64) and push to Docker Hub'
+run = 'docker buildx build --platform linux/amd64,linux/arm64 -t vikas027/k8s-flagger-tester:latest --push .'
+alias = 'db'
+
+[tasks.docker-build-local]
+description = 'Build Docker image for local arch only (no push)'
+run = 'docker buildx build -t vikas027/k8s-flagger-tester:dev --load .'
+alias = 'dbl'
+
+[tasks.docker-run]
+description = 'Run the loadtester container locally on port 8080'
+run = 'docker run --rm -p 8080:8080 vikas027/k8s-flagger-tester:dev'
+alias = 'dr'
+
+[tasks.docker-preview]
+description = 'Build and push a preview image to ttl.sh (expires 6h)'
+run = 'docker buildx build -t ttl.sh/vikas027/k8s-flagger-tester:6h --push .'
+alias = 'dp'
+
+[tasks.check]
+depends = ['lint']
+description = 'Run all checks (lint only — no compiled output to typecheck)'
+alias = 'ck'
+
+[tasks.docs-serve]
+description = 'Serve docs locally with live reload at http://localhost:8000'
+run = 'mkdocs serve'
+alias = 'ds'
+
+[tasks.docs-build]
+description = 'Build docs site to site/ directory'
+run = 'mkdocs build --strict'
+alias = 'dbs'
