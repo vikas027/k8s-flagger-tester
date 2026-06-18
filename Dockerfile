@@ -1,7 +1,7 @@
 FROM ghcr.io/fluxcd/flagger-loadtester:0.37.0 AS loadtester
 FROM bats/bats:1.13.0 AS bats
 
-FROM debian:12-slim
+FROM debian:13-slim
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
