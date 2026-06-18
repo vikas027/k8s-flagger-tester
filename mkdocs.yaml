@@ -61,4 +61,5 @@ nav:
   - Configuration: configuration.md
   - Dependency Updates: dependency-updates.md
   - Contributing: contributing.md
+  - Security: security.md
   - Changelog: changelog.md
