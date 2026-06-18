@@ -1,0 +1,49 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": ["ARG HURL_VERSION=(?<currentValue>[\\d.]+)\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "Orange-OpenSource/hurl",
+      "extractVersionTemplate": "^(?<version>.*)$"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": ["ARG K6_VERSION=(?<currentValue>v[\\d.]+)\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "grafana/k6"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": ["ARG HELM_VERSION=(?<currentValue>v[\\d.]+)\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "helm/helm"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": ["ARG KUBECTL_VERSION=(?<currentValue>v[\\d.]+)\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "kubernetes/kubernetes"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": ["ARG GHZ_VERSION=(?<currentValue>v[\\d.]+)\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "bojand/ghz"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": ["ARG GRPC_HEALTH_PROBE_VERSION=(?<currentValue>v[\\d.]+)\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "grpc-ecosystem/grpc-health-probe"
+    }
+  ]
+}
