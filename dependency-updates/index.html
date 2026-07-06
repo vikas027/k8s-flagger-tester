@@ -403,10 +403,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#why-two-bots" class="md-nav__link">
+  <a href="#why-two-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why Two Bots?
+        Why Two Tools?
       
     </span>
   </a>
@@ -414,10 +414,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-renovate-tracks" class="md-nav__link">
+  <a href="#ownership-split" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Renovate Tracks
+        Ownership Split
       
     </span>
   </a>
@@ -425,10 +425,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#release-cadence" class="md-nav__link">
+  <a href="#covered-tools-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Release Cadence
+        Covered Tools Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#release-trigger-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release Trigger Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schedule
       
     </span>
   </a>
@@ -551,10 +573,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#why-two-bots" class="md-nav__link">
+  <a href="#why-two-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why Two Bots?
+        Why Two Tools?
       
     </span>
   </a>
@@ -562,10 +584,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-renovate-tracks" class="md-nav__link">
+  <a href="#ownership-split" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Renovate Tracks
+        Ownership Split
       
     </span>
   </a>
@@ -573,10 +595,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#release-cadence" class="md-nav__link">
+  <a href="#covered-tools-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Release Cadence
+        Covered Tools Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#release-trigger-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release Trigger Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schedule
       
     </span>
   </a>
@@ -609,72 +653,218 @@
 
 
 <h1 id="dependency-updates">Dependency Updates</h1>
-<p>Two bots run side-by-side to keep every pinned version current:</p>
+<p>Two tools divide ownership so no dependency falls through the cracks and there is no overlap between them. Both run weekly on <strong>Sunday at 09:00 UTC</strong>.</p>
+<hr />
+<h2 id="why-two-tools">Why Two Tools?</h2>
+<p><strong>Dependabot</strong> is the obvious first choice — native GitHub integration, zero configuration for most ecosystems. But it has two blind spots in this repo:</p>
+<ul>
+<li>It cannot update <code>ARG</code> version strings inside Dockerfile <code>RUN</code> layers — only <code>FROM</code> references</li>
+<li>It has no ecosystem for pre-commit hook <code>rev:</code> pins</li>
+</ul>
+<p><strong>Renovate</strong> fills both gaps with regex custom managers and its built-in <code>pre-commit</code> support.</p>
+<div class="admonition info">
+<p class="admonition-title">Scope isolation</p>
+<p>Renovate is configured with <code>enabledManagers: ["pre-commit", "custom.regex"]</code> — it never touches what Dependabot already owns (Docker <code>FROM</code> images, GitHub Actions, pip packages).</p>
+</div>
+<hr />
+<h2 id="ownership-split">Ownership Split</h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Dependabot</label><label for="__tabbed_1_2">Renovate</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Configured in <code>.github/dependabot.yml</code>.</p>
 <table>
 <thead>
 <tr>
-<th>Bot</th>
-<th>What it tracks</th>
+<th>Group</th>
+<th>What</th>
+<th>Commit prefix</th>
+<th style="text-align: center;">Triggers release?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>github-actions</code></td>
+<td>All GitHub Actions in <code>.github/workflows/</code></td>
+<td><code>chore(ci)</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td><code>docker</code></td>
+<td><code>FROM</code> base images in <code>Dockerfile</code></td>
+<td><code>fix(docker)</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td><code>pip-deps</code></td>
+<td><code>mkdocs-material</code>, <code>pre-commit</code>, <code>pyyaml</code>, <code>yamllint</code> in <code>requirements.txt</code></td>
+<td><code>chore(deps)</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<p>Configured in <code>renovate.json</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>What</th>
+<th>Commit prefix</th>
+<th style="text-align: center;">Triggers release?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pre-commit hooks</code></td>
+<td>All <code>rev:</code> pins in <code>.pre-commit-config.yaml</code></td>
+<td><code>chore(ci):</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td><code>dockerfile tool versions</code></td>
+<td><code>ARG</code> tool versions in <code>Dockerfile</code></td>
+<td><code>fix(docker):</code></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr>
+<td>mise python</td>
+<td><code>python = "..."</code> in <code>mise.toml</code></td>
+<td><code>chore(ci):</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="covered-tools-reference">Covered Tools Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Tool / Version</th>
+<th>File</th>
+<th>Covered by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>All GitHub Actions</td>
+<td><code>.github/workflows/</code></td>
+<td>Dependabot <code>github-actions</code></td>
+</tr>
+<tr>
+<td><code>FROM ghcr.io/fluxcd/flagger-loadtester</code></td>
+<td><code>Dockerfile</code></td>
+<td>Dependabot <code>docker</code></td>
+</tr>
+<tr>
+<td><code>FROM bats/bats</code></td>
+<td><code>Dockerfile</code></td>
+<td>Dependabot <code>docker</code></td>
+</tr>
+<tr>
+<td><code>FROM debian:13-slim</code></td>
+<td><code>Dockerfile</code></td>
+<td>Dependabot <code>docker</code></td>
+</tr>
+<tr>
+<td><code>mkdocs-material</code>, <code>pre-commit</code>, <code>pyyaml</code>, <code>yamllint</code></td>
+<td><code>requirements.txt</code></td>
+<td>Dependabot <code>pip</code></td>
+</tr>
+<tr>
+<td>Pre-commit hook <code>rev:</code> pins</td>
+<td><code>.pre-commit-config.yaml</code></td>
+<td>Renovate <code>pre-commit</code></td>
+</tr>
+<tr>
+<td><code>ARG HURL_VERSION</code></td>
+<td><code>Dockerfile</code></td>
+<td>Renovate <code>custom.regex</code></td>
+</tr>
+<tr>
+<td><code>ARG K6_VERSION</code></td>
+<td><code>Dockerfile</code></td>
+<td>Renovate <code>custom.regex</code></td>
+</tr>
+<tr>
+<td><code>ARG HELM_VERSION</code></td>
+<td><code>Dockerfile</code></td>
+<td>Renovate <code>custom.regex</code></td>
+</tr>
+<tr>
+<td><code>ARG KUBECTL_VERSION</code></td>
+<td><code>Dockerfile</code></td>
+<td>Renovate <code>custom.regex</code></td>
+</tr>
+<tr>
+<td><code>ARG GHZ_VERSION</code></td>
+<td><code>Dockerfile</code></td>
+<td>Renovate <code>custom.regex</code></td>
+</tr>
+<tr>
+<td><code>ARG GRPC_HEALTH_PROBE_VERSION</code></td>
+<td><code>Dockerfile</code></td>
+<td>Renovate <code>custom.regex</code></td>
+</tr>
+<tr>
+<td><code>python = "..."</code></td>
+<td><code>mise.toml</code></td>
+<td>Renovate <code>custom.regex</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="release-trigger-logic">Release Trigger Logic</h2>
+<p>Groups using <code>fix:</code> prefix cause release-please to open a Release PR when merged to <code>main</code>. You decide when to merge — nothing ships automatically. Groups using <code>chore:</code> are silently consumed with no changelog entry and no version bump.</p>
+<table>
+<thead>
+<tr>
+<th>Prefix</th>
+<th style="text-align: center;">Triggers release?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fix(docker):</code></td>
+<td style="text-align: center;">Yes — patch</td>
+</tr>
+<tr>
+<td><code>chore(ci):</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td><code>chore(deps):</code></td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="schedule">Schedule</h2>
+<p>Both tools run on the same cadence — at most five PRs on a Sunday morning, one per group.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
 <th>Config</th>
 <th>Schedule</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="https://docs.github.com/en/code-security/dependabot">Dependabot</a></td>
-<td><code>FROM</code> base images · GitHub Actions SHAs</td>
+<td>Dependabot</td>
 <td><code>.github/dependabot.yml</code></td>
-<td>Weekly</td>
+<td><code>day: sunday · time: "09:00" · timezone: UTC</code></td>
 </tr>
 <tr>
-<td><a href="https://docs.renovatebot.com/">Renovate</a></td>
-<td><code>ARG</code> tool versions in <code>Dockerfile</code></td>
+<td>Renovate</td>
 <td><code>renovate.json</code></td>
-<td>On push + scheduled</td>
+<td><code>schedule: ["at 09:00 on sunday"]</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="why-two-bots">Why Two Bots?</h2>
-<p><strong>Dependabot</strong> understands Docker <code>FROM</code> lines and GitHub Actions SHAs natively — it cannot update <code>ARG</code> version strings inside a <code>RUN</code> layer.</p>
-<p><strong>Renovate</strong> fills that gap via regex-based custom managers, opening a PR whenever any tool version in the Dockerfile has a new upstream release.</p>
-<h2 id="what-renovate-tracks">What Renovate Tracks</h2>
-<p>Each <code>ARG</code> in the Dockerfile is mapped to its upstream GitHub release source:</p>
-<table>
-<thead>
-<tr>
-<th>ARG</th>
-<th>Repository</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>HURL_VERSION</code></td>
-<td><code>Orange-OpenSource/hurl</code></td>
-</tr>
-<tr>
-<td><code>K6_VERSION</code></td>
-<td><code>grafana/k6</code></td>
-</tr>
-<tr>
-<td><code>HELM_VERSION</code></td>
-<td><code>helm/helm</code></td>
-</tr>
-<tr>
-<td><code>KUBECTL_VERSION</code></td>
-<td><code>kubernetes/kubernetes</code></td>
-</tr>
-<tr>
-<td><code>GHZ_VERSION</code></td>
-<td><code>bojand/ghz</code></td>
-</tr>
-<tr>
-<td><code>GRPC_HEALTH_PROBE_VERSION</code></td>
-<td><code>grpc-ecosystem/grpc-health-probe</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id="release-cadence">Release Cadence</h2>
-<p>Every merged Dependabot or Renovate PR triggers a <strong>patch version bump</strong> via release-please, which auto-merges and publishes a new Docker image. The <code>latest</code> tag always points to the most recent release.</p>
 
 
 
