@@ -21,22 +21,26 @@
 
 All bundled tools are installed at their latest stable versions with explicit version ARGs, making upgrades a single-line diff.
 
+📖 **Full documentation:** [vikas027.github.io/k8s-flagger-tester](https://vikas027.github.io/k8s-flagger-tester/)
+
 ## Why Debian?
 
 Alpine Linux uses musl libc. The hurl 8.x upstream releases a single Linux binary linked against glibc — there is no musl build. Running a glibc binary on Alpine requires a compat layer (`libc6-compat`) that is fragile and not officially supported by the hurl project. This image uses Debian bookworm-slim (glibc) as the runtime base to avoid those issues entirely. All static Go binaries (k6, kubectl, helm, ghz, grpc_health_probe) work unchanged on both musl and glibc, so nothing is lost in the switch.
 
 ## What's Included
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| flagger-loadtester | 0.37.0 | Canary webhook handler — receives Flagger pre/post-rollout hooks |
-| hurl | 8.0.1 | HTTP assertion testing — validate endpoints before traffic shifts |
-| k6 | v2.0.0 | Load testing — verify latency and error-rate thresholds |
-| helm | v4.2.2 | Chart operations in webhook scripts |
-| kubectl | v1.36.2 | Cluster operations in webhook scripts |
-| bats | v1.13.0 | Bash-based test suites in webhook scripts |
-| ghz | v0.121.0 | gRPC benchmarking |
-| grpc_health_probe | v0.4.52 | gRPC health checks |
+| Tool | Purpose |
+|------|---------|
+| flagger-loadtester | Canary webhook handler — receives Flagger pre/post-rollout hooks |
+| hurl | HTTP assertion testing — validate endpoints before traffic shifts |
+| k6 | Load testing — verify latency and error-rate thresholds |
+| helm | Chart operations in webhook scripts |
+| kubectl | Cluster operations in webhook scripts |
+| bats | Bash-based test suites in webhook scripts |
+| ghz | gRPC benchmarking |
+| grpc_health_probe | gRPC health checks |
+
+Pinned versions are in the `Dockerfile` and updated automatically by Renovate and Dependabot.
 
 ## Usage
 

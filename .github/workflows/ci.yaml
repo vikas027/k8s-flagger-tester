@@ -1,22 +1,6 @@
 ---
 name: CI
 
-# ============================================================================
-# GitHub Actions Registry
-# ============================================================================
-#
-# | Action                                      | Version | SHA (Short) | Repository                                              |
-# |---------------------------------------------|---------|-------------|---------------------------------------------------------|
-# | amannn/action-semantic-pull-request          | v6.1.1  | 48f2562     | https://github.com/amannn/action-semantic-pull-request  |
-# | actions/checkout                             | v6.0.3  | df4cb1c     | https://github.com/actions/checkout                     |
-# | actions/setup-python                         | v6.2.0  | a309ff8     | https://github.com/actions/setup-python                 |
-# | dorny/paths-filter                           | v4.0.1  | fbd0ab8     | https://github.com/dorny/paths-filter                   |
-# | docker/setup-buildx-action                   | v4.1.0  | d7f5e7f     | https://github.com/docker/setup-buildx-action           |
-# | docker/build-push-action                     | v7.2.0  | f9f3042     | https://github.com/docker/build-push-action             |
-# | aquasecurity/trivy-action                    | v0.36.0 | ed142fd     | https://github.com/aquasecurity/trivy-action            |
-# | github/codeql-action/upload-sarif           | v4.36.2 | 8aad20d     | https://github.com/github/codeql-action                 |
-# ============================================================================
-
 on:
   pull_request:
     branches: [main]
@@ -31,6 +15,7 @@ on:
       - ".hadolint.yaml"
       - "renovate.json"
       - "mise.toml"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -62,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.14"
 
@@ -72,6 +57,31 @@ jobs:
       - name: Run pre-commit hooks
         run: pre-commit run --all-files -v
 
+      - name: Generate summary
+        if: always()
+        run: |
+          {
+            echo "## 🧹 Lint Results"
+            echo ""
+            echo "| Check | Tool |"
+            echo "|-------|------|"
+            echo "| Trailing whitespace | pre-commit |"
+            echo "| End of file fixer | pre-commit |"
+            echo "| YAML syntax | pre-commit |"
+            echo "| Merge conflicts | pre-commit |"
+            echo "| Large files | pre-commit |"
+            echo "| JSON syntax | pre-commit |"
+            echo "| TOML syntax | pre-commit |"
+            echo "| Case conflicts | pre-commit |"
+            echo "| Private keys | pre-commit |"
+            echo "| No commit to main | pre-commit |"
+            echo "| YAML style | yamllint |"
+            echo "| Dockerfile | hadolint |"
+            echo "| GitHub Actions workflows | actionlint |"
+            echo "| Commit message | conventional-commits |"
+            echo "| Renovate config | renovate-config-validator |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   changes:
     runs-on: ubuntu-latest
     outputs:
@@ -79,7 +89,7 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+      - uses: dorny/paths-filter@7b450fff21473bca461d4b92ce414b9d0420d706 # v4.0.2
         id: filter
         with:
           filters: |
@@ -93,14 +103,14 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
 
       - name: Set short SHA
         id: sha
         run: echo "short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push preview image
-        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           push: true
@@ -149,7 +159,7 @@ jobs:
           ignore-unfixed: true
 
       - name: Upload Trivy SARIF to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4.36.2
+        uses: github/codeql-action/upload-sarif@54f647b7e1bb85c95cddabcd46b0c578ec92bc1a # v4.36.3
         with:
           sarif_file: trivy-results.sarif
 
