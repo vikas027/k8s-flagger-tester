@@ -615,43 +615,37 @@
 <thead>
 <tr>
 <th>ARG</th>
-<th>Default</th>
 <th>Upstream</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>HURL_VERSION</code></td>
-<td><code>8.0.1</code></td>
 <td><a href="https://github.com/Orange-OpenSource/hurl/releases">Orange-OpenSource/hurl</a></td>
 </tr>
 <tr>
 <td><code>K6_VERSION</code></td>
-<td><code>v2.0.0</code></td>
 <td><a href="https://github.com/grafana/k6/releases">grafana/k6</a></td>
 </tr>
 <tr>
 <td><code>HELM_VERSION</code></td>
-<td><code>v4.2.2</code></td>
 <td><a href="https://github.com/helm/helm/releases">helm/helm</a></td>
 </tr>
 <tr>
 <td><code>KUBECTL_VERSION</code></td>
-<td><code>v1.36.2</code></td>
 <td><a href="https://github.com/kubernetes/kubernetes/releases">kubernetes/kubernetes</a></td>
 </tr>
 <tr>
 <td><code>GHZ_VERSION</code></td>
-<td><code>v0.121.0</code></td>
 <td><a href="https://github.com/bojand/ghz/releases">bojand/ghz</a></td>
 </tr>
 <tr>
 <td><code>GRPC_HEALTH_PROBE_VERSION</code></td>
-<td><code>v0.4.52</code></td>
 <td><a href="https://github.com/grpc-ecosystem/grpc-health-probe/releases">grpc-ecosystem/grpc-health-probe</a></td>
 </tr>
 </tbody>
 </table>
+<p>Current pinned defaults are in the <a href="https://github.com/vikas027/k8s-flagger-tester/blob/main/Dockerfile"><code>Dockerfile</code></a> and updated automatically by Renovate.</p>
 <h2 id="overriding-versions">Overriding Versions</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">HURL_VERSION</span><span class="o">=</span><span class="m">8</span>.1.0<span class="w"> </span><span class="se">\</span>
