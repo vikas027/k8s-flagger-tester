@@ -22,16 +22,18 @@ Alpine Linux uses musl libc. The hurl 8.x upstream releases a single Linux binar
 
 ## What's Included
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| flagger-loadtester | 0.37.0 | Canary webhook handler |
-| hurl | 8.0.1 | HTTP assertion testing |
-| k6 | v2.0.0 | Load testing |
-| helm | v4.2.2 | Chart operations |
-| kubectl | v1.36.2 | Cluster operations |
-| bats | v1.13.0 | Bash-based test suites |
-| ghz | v0.121.0 | gRPC benchmarking |
-| grpc_health_probe | v0.4.52 | gRPC health checks |
+| Tool | Purpose |
+|------|---------|
+| flagger-loadtester | Canary webhook handler |
+| hurl | HTTP assertion testing |
+| k6 | Load testing |
+| helm | Chart operations |
+| kubectl | Cluster operations |
+| bats | Bash-based test suites |
+| ghz | gRPC benchmarking |
+| grpc_health_probe | gRPC health checks |
+
+Pinned versions are in the [`Dockerfile`](https://github.com/vikas027/k8s-flagger-tester/blob/main/Dockerfile) and kept current by Renovate and Dependabot automatically.
 
 ## Canary Gate Flow
 
