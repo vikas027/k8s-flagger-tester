@@ -15,6 +15,17 @@ repos:
       - id: check-added-large-files
         name: Check for large files
         args: [--maxkb=500]
+      - id: check-json
+        name: Check JSON syntax
+      - id: check-toml
+        name: Check TOML syntax
+      - id: check-case-conflict
+        name: Check for case conflicts
+      - id: detect-private-key
+        name: Detect private keys
+      - id: no-commit-to-branch
+        name: Prevent commits to main
+        args: [--branch, main]
 
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.38.0
@@ -40,3 +51,9 @@ repos:
     hooks:
       - id: actionlint-docker
         name: Lint GitHub Actions workflows
+
+  - repo: https://github.com/renovatebot/pre-commit-hooks
+    rev: 43.252.1
+    hooks:
+      - id: renovate-config-validator
+        args: [--strict]
