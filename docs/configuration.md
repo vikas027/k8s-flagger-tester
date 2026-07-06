@@ -4,14 +4,16 @@ All tool versions are declared as `ARG`s in the Dockerfile and can be overridden
 
 ## Build Arguments
 
-| ARG | Default | Upstream |
-|-----|---------|----------|
-| `HURL_VERSION` | `8.0.1` | [Orange-OpenSource/hurl](https://github.com/Orange-OpenSource/hurl/releases) |
-| `K6_VERSION` | `v2.0.0` | [grafana/k6](https://github.com/grafana/k6/releases) |
-| `HELM_VERSION` | `v4.2.2` | [helm/helm](https://github.com/helm/helm/releases) |
-| `KUBECTL_VERSION` | `v1.36.2` | [kubernetes/kubernetes](https://github.com/kubernetes/kubernetes/releases) |
-| `GHZ_VERSION` | `v0.121.0` | [bojand/ghz](https://github.com/bojand/ghz/releases) |
-| `GRPC_HEALTH_PROBE_VERSION` | `v0.4.52` | [grpc-ecosystem/grpc-health-probe](https://github.com/grpc-ecosystem/grpc-health-probe/releases) |
+| ARG | Upstream |
+|-----|----------|
+| `HURL_VERSION` | [Orange-OpenSource/hurl](https://github.com/Orange-OpenSource/hurl/releases) |
+| `K6_VERSION` | [grafana/k6](https://github.com/grafana/k6/releases) |
+| `HELM_VERSION` | [helm/helm](https://github.com/helm/helm/releases) |
+| `KUBECTL_VERSION` | [kubernetes/kubernetes](https://github.com/kubernetes/kubernetes/releases) |
+| `GHZ_VERSION` | [bojand/ghz](https://github.com/bojand/ghz/releases) |
+| `GRPC_HEALTH_PROBE_VERSION` | [grpc-ecosystem/grpc-health-probe](https://github.com/grpc-ecosystem/grpc-health-probe/releases) |
+
+Current pinned defaults are in the [`Dockerfile`](https://github.com/vikas027/k8s-flagger-tester/blob/main/Dockerfile) and updated automatically by Renovate.
 
 ## Overriding Versions
 
