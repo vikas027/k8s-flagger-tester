@@ -1,5 +1,5 @@
-FROM ghcr.io/fluxcd/flagger-loadtester:0.37.0@sha256:6d725de26961aa3b5a2db15558ba6cbff95e72758e43901b93ff611a304c6ce8 AS loadtester
-FROM bats/bats:1.13.0@sha256:6e4b9369468b7f3fd8f402ac6cc8ea7b2e4903eae28d08785f31a0245eb51a44 AS bats
+FROM ghcr.io/fluxcd/flagger-loadtester:0.39.0@sha256:6a8546993cb574cdd9d42a84430eca2b74c30bf91349e36aa60969b46655f059 AS loadtester
+FROM bats/bats:1.14.0@sha256:5322b877351fda0cc435de8c6116de7d0a2ec79d7c680132a0ef329a633bc66f AS bats
 
 FROM debian:13-slim@sha256:28de0877c2189802884ccd20f15ee41c203573bd87bb6b883f5f46362d24c5c2
 
