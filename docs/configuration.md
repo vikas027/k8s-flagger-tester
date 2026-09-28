@@ -30,8 +30,8 @@ The Dockerfile uses three `FROM` stages, all tracked by Dependabot:
 
 | Stage | Image | Purpose |
 |-------|-------|---------|
-| `loadtester` | `ghcr.io/fluxcd/flagger-loadtester:0.37.0` | Provides the webhook binary |
-| `bats` | `bats/bats:1.13.0` | Provides the bats test runner |
+| `loadtester` | `ghcr.io/fluxcd/flagger-loadtester` | Provides the webhook binary |
+| `bats` | `bats/bats` | Provides the bats test runner |
 | final | `debian` | Runtime base (glibc) |
 
 !!! note "Why Debian?"
