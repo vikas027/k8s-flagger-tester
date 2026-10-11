@@ -1,7 +1,7 @@
 FROM ghcr.io/fluxcd/flagger-loadtester:0.39.0@sha256:6a8546993cb574cdd9d42a84430eca2b74c30bf91349e36aa60969b46655f059 AS loadtester
 FROM bats/bats:1.14.0@sha256:5322b877351fda0cc435de8c6116de7d0a2ec79d7c680132a0ef329a633bc66f AS bats
 
-FROM debian:13-slim@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a
+FROM debian:13-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
